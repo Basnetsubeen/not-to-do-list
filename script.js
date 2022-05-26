@@ -1,16 +1,27 @@
 // let entryList = [{ task: "sample data", hr: 0 }];
 let entryList = [];
 let badList = [];
+const weekHours = 7 * 24;
 
 // get the data on form submit
 const handleOnSubmit = (e) => {
   const formDt = new FormData(e);
   const task = formDt.get("task");
-  const hr = formDt.get("hr");
+  const hr = +formDt.get("hr");
 
   const obj = { task, hr };
+
+  // are we allow to add new entry
+  const ttlHrs = getTotalHours();
+  console.log(ttlHrs);
+
+  if (ttlHrs + hr > weekHours) {
+    return alert("you have exceeded the weekly hours, can not add this");
+  }
+
   entryList.push(obj);
   display(entryList);
+  getTotalHours();
 };
 
 // display item on the DOM
@@ -33,6 +44,7 @@ const display = (taskArg) => {
 </tr>`;
   });
   document.getElementById("entryList").innerHTML = str;
+  getTotalHours();
 };
 
 // display bad list on the dom
@@ -53,6 +65,8 @@ const badListDisplay = (arg) => {
   </tr>`;
   });
   document.getElementById("badList").innerHTML = str;
+  badTotalHours();
+  getTotalHours();
 };
 // delete the item form the list
 const handleOnDeleteEntryList = (i) => {
@@ -80,8 +94,20 @@ const switchToEntryList = (i) => {
 // delete the item form the badlist
 const handleOnDeleteBadList = (i) => {
   if (!confirm("Are you sure you want to delete")) return;
-  const filterArray = badList.filter((item, index) => index !== i);
+  const filterArray = badList.filter((item, index) => index !== i); //5! ==5
   badList = filterArray;
-  display(entryList);
   badListDisplay(badList);
+};
+const getTotalHours = () => {
+  const ttlEntryList = entryList.reduce((acc, item) => acc + item.hr, 0);
+  const ttlBadList = entryList.reduce((acc, item) => acc + item.hr, 0);
+
+  const total = ttlEntryList + ttlBadList;
+  document.getElementById("totalHours").innerText = total;
+  return total;
+};
+
+const badTotalHours = () => {
+  const ttlBadList = entryList.reduce((acc, item) => acc + item.hr, 0);
+  document.getElementById("badTtlHr").innerText = ttlBadList;
 };

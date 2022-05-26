@@ -108,6 +108,6 @@ const getTotalHours = () => {
 };
 
 const badTotalHours = () => {
-  const ttlBadList = entryList.reduce((acc, item) => acc + item.hr, 0);
+  const ttlBadList = badList.reduce((acc, item) => acc + item.hr, 0);
   document.getElementById("badTtlHr").innerText = ttlBadList;
 };
